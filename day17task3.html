@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Task Tracker</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .tasks-section {
+            flex: 2;
+            min-width: 500px;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .tasks-container {
+            margin-top: 20px;
+        }
+        
+        .task-card {
+            background-color: #f9fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .task-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+        
+        .task-id {
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .task-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item {
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        
+        .complete-btn {
+            background: #2ecc71;
+            margin-right: 10px;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+        }
+        
+        .priority-high { border-left-color: #e74c3c; }
+        .priority-medium { border-left-color: #f39c12; }
+        .priority-low { border-left-color: #2ecc71; }
+        
+        .status-pending { 
+            background-color: #fff9e6;
+            border-left-color: #f39c12;
+        }
+        
+        .status-completed { 
+            background-color: #e6f7ee;
+            border-left-color: #2ecc71;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .filter-section {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-section select {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .employee-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9fafc;
+            border-radius: 8px;
+        }
+        
+        .employee-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Employee Task Tracker</h1>
+            <p class="subtitle">Manage and track employee tasks efficiently</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">Assign New Task</h2>
+                <div class="form-group">
+                    <label for="employee">Employee Name</label>
+                    <input type="text" id="employee" placeholder="Enter employee name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" id="taskTitle" placeholder="Enter task title">
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskDescription">Task Description</label>
+                    <textarea id="taskDescription" placeholder="Enter task description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dueDate">Due Date</label>
+                    <input type="date" id="dueDate">
+                </div>
+                
+                <button id="assignTask">Assign Task</button>
+                
+                <div class="button-group">
+                    <button id="showAll">Show All Tasks</button>
+                    <button id="showPending">Show Pending Tasks</button>
+                    <button id="showCompleted">Show Completed Tasks</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="searchTask">Search Task by ID</label>
+                    <input type="text" id="searchTask" placeholder="Enter task ID">
+                    <button id="searchBtn" style="margin-top: 10px;">Search</button>
+                </div>
+                
+                <div class="employee-section">
+                    <div class="employee-name">Merge Tasks</div>
+                    <p>Combine tasks from two employees</p>
+                    <input type="text" id="employee1" placeholder="Employee 1" style="margin-bottom: 10px;">
+                    <input type="text" id="employee2" placeholder="Employee 2">
+                    <button id="mergeTasks" style="margin-top: 10px;">Merge Tasks</button>
+                </div>
+            </div>
+            
+            <div class="tasks-section">
+                <h2 class="section-title">Task List</h2>
+                
+                <div class="filter-section">
+                    <select id="filterEmployee">
+                        <option value="">All Employees</option>
+                    </select>
+                    
+                    <select id="filterPriority">
+                        <option value="">All Priorities</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                    
+                    <select id="filterStatus">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    
+                    <select id="sortBy">
+                        <option value="dueDate">Sort by Due Date</option>
+                        <option value="priority">Sort by Priority</option>
+                        <option value="employee">Sort by Employee</option>
+                    </select>
+                </div>
+                
+                <div id="tasksContainer" class="tasks-container">
+                    <!-- Task cards will be displayed here -->
+                </div>
+                
+                <div id="statsContainer" class="stats-container">
+                    <!-- Statistics will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global array for tasks
+        let tasks = [];
+        let taskIdCounter = 1;
+        
+        // Hoisting demonstration - function declaration
+        // This function can be called before it's defined in the code
+        console.log("Calling logTasks before definition:", typeof logTasks);
+        if (typeof logTasks === 'function') {
+            logTasks();
+        }
+        
+        // Function declaration (hoisted)
+        function logTasks() {
+            console.log("Current tasks:", tasks);
+        }
+        
+        // Function to assign a new task
+        const assignTask = function(employee, title, description, priority, dueDate) {
+            // Function scope for each employee's task list
+            function validateTask() {
+                if (!employee || !title) {
+                    throw new Error("Employee name and task title are required");
+                }
+                
+                // Nested function to generate task ID
+                function generateTaskId() {
+                    return `T${taskIdCounter++}`;
+                }
+                
+                return generateTaskId();
+            }
+            
+            const taskId = validateTask();
+            
+            const newTask = {
+                id: taskId,
+                employee: employee,
+                title: title,
+                description: description,
+                priority: priority,
+                dueDate: dueDate,
+                status: 'pending',
+                assignedDate: new Date().toISOString().split('T')[0]
+            };
+            
+            tasks.push(newTask);
+            updateEmployeeFilter();
+            
+            return newTask;
+        };
+        
+        // Function to complete a task
+        const completeTask = (taskId) => {
+            // Using findIndex() to update a task's status
+            const taskIndex = tasks.findIndex(task => task.id === taskId);
+            
+            if (taskIndex === -1) {
+                alert("Task not found!");
+                return false;
+            }
+            
+            tasks[taskIndex].status = 'completed';
+            tasks[taskIndex].completedDate = new Date().toISOString().split('T')[0];
+            
+            return true;
+        };
+        
+        // Function to get pending tasks
+        function getPendingTasks(employee = null) {
+            // Using filter() to get completed/pending tasks
+            let pendingTasks = tasks.filter(task => task.status === 'pending');
+            
+            if (employee) {
+                pendingTasks = pendingTasks.filter(task => task.employee === employee);
+            }
+            
+            return pendingTasks;
+        }
+        
+        // Function to display tasks
+        const displayTasks = (tasksToDisplay = tasks) => {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+            
+            if (tasksToDisplay.length === 0) {
+                container.innerHTML = '<div class="task-card">No tasks found</div>';
+                return;
+            }
+            
+            // Using forEach() to print tasks
+            tasksToDisplay.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = `task-card status-${task.status} priority-${task.priority}`;
+                
+                taskCard.innerHTML = `
+                    <div class="task-header">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-id">${task.id}</div>
+                    </div>
+                    <div class="task-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Employee</div>
+                            <div class="detail-value">${task.employee}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Priority</div>
+                            <div class="detail-value">${task.priority}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Due Date</div>
+                            <div class="detail-value">${task.dueDate || 'Not set'}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value">${task.status}</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Description</div>
+                        <div class="detail-value">${task.description || 'No description'}</div>
+                    </div>
+                    <div class="task-actions">
+                        ${task.status === 'pending' ? 
+                            `<button class="complete-btn" onclick="completeTask('${task.id}'); displayTasks(); updateStats();">Mark Complete</button>` : 
+                            ''}
+                        <button class="delete-btn" onclick="deleteTask('${task.id}'); displayTasks(); updateStats();">Delete</button>
+                    </div>
+                `;
+                
+                container.appendChild(taskCard);
+            });
+        };
+        
+        // Function to find a task by ID
+        const findTaskById = (taskId) => {
+            // Using find() to find a task by ID
+            return tasks.find(task => task.id === taskId);
+        };
+        
+        // Function to merge two employees' tasks
+        const mergeEmployeeTasks = (employee1, employee2) => {
+            const employee1Tasks = tasks.filter(task => task.employee === employee1);
+            const employee2Tasks = tasks.filter(task => task.employee === employee2);
+            
+            // Using concat() to merge two employees' tasks
+            const mergedTasks = employee1Tasks.concat(employee2Tasks);
+            
+            return mergedTasks;
+        };
+        
+        // Function to sort tasks
+        const sortTasks = (tasksToSort, sortBy) => {
+            // Using sort() to sort tasks by priority, due date, or employee
+            const sortedTasks = [...tasksToSort];
+            
+            sortedTasks.sort((a, b) => {
+                if (sortBy === 'priority') {
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    return priorityOrder[b.priority] - priorityOrder[a.priority];
+                } else if (sortBy === 'dueDate') {
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                } else if (sortBy === 'employee') {
+                    return a.employee.localeCompare(b.employee);
+                }
+                return 0;
+            });
+            
+            return sortedTasks;
+        };
+        
+        // Function to delete a task
+        const deleteTask = (taskId) => {
+            const taskIndex = tasks.findIndex(task => task.id === taskId);
+            
+            if (taskIndex !== -1) {
+                tasks.splice(taskIndex, 1);
+                updateEmployeeFilter();
+                return true;
+            }
+            
+            return false;
+        };
+        
+        // Function to update employee filter options
+        const updateEmployeeFilter = () => {
+            const employeeFilter = document.getElementById('filterEmployee');
+            const uniqueEmployees = [...new Set(tasks.map(task => task.employee))];
+            
+            // Clear existing options (except "All Employees")
+            while (employeeFilter.children.length > 1) {
+                employeeFilter.removeChild(employeeFilter.lastChild);
+            }
+            
+            // Add employee options
+            uniqueEmployees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee;
+                option.textContent = employee;
+                employeeFilter.appendChild(option);
+            });
+        };
+        
+        // Function to update statistics
+        const updateStats = () => {
+            const statsContainer = document.getElementById('statsContainer');
+            
+            // Block scope inside loops for status checks
+            let pendingCount = 0;
+            let completedCount = 0;
+            let highPriorityCount = 0;
+            
+            // Hoisting demonstration with var inside a loop
+            for (var i = 0; i < tasks.length; i++) {
+                // Block scope with let
+                let task = tasks[i];
+                
+                if (task.status === 'pending') {
+                    pendingCount++;
+                } else if (task.status === 'completed') {
+                    completedCount++;
+                }
+                
+                if (task.priority === 'high') {
+                    highPriorityCount++;
+                }
+            }
+            
+            // var is function-scoped, so i is accessible here
+            console.log("Loop completed, i =", i);
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${tasks.length}</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${pendingCount}</div>
+                    <div class="stat-label">Pending Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${completedCount}</div>
+                    <div class="stat-label">Completed Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${highPriorityCount}</div>
+                    <div class="stat-label">High Priority</div>
+                </div>
+            `;
+        };
+        
+        // Function to filter tasks
+        const filterTasks = () => {
+            const employee = document.getElementById('filterEmployee').value;
+            const priority = document.getElementById('filterPriority').value;
+            const status = document.getElementById('filterStatus').value;
+            const sortBy = document.getElementById('sortBy').value;
+            
+            let filteredTasks = tasks;
+            
+            if (employee) {
+                filteredTasks = filteredTasks.filter(task => task.employee === employee);
+            }
+            
+            if (priority) {
+                filteredTasks = filteredTasks.filter(task => task.priority === priority);
+            }
+            
+            if (status) {
+                filteredTasks = filteredTasks.filter(task => task.status === status);
+            }
+            
+            // Sort the filtered tasks
+            filteredTasks = sortTasks(filteredTasks, sortBy);
+            
+            displayTasks(filteredTasks);
+        };
+        
+        // Event listeners
+        document.getElementById('assignTask').addEventListener('click', function() {
+            const employee = document.getElementById('employee').value;
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const priority = document.getElementById('priority').value;
+            const dueDate = document.getElementById('dueDate').value;
+            
+            if (employee && title) {
+                assignTask(employee, title, description, priority, dueDate);
+                
+                // Clear form
+                document.getElementById('employee').value = '';
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDescription').value = '';
+                document.getElementById('priority').value = 'low';
+                document.getElementById('dueDate').value = '';
+                
+                // Update display
+                displayTasks();
+                updateStats();
+                
+                alert('Task assigned successfully!');
+            } else {
+                alert('Employee name and task title are required.');
+            }
+        });
+        
+        document.getElementById('showAll').addEventListener('click', function() {
+            displayTasks();
+        });
+        
+        document.getElementById('showPending').addEventListener('click', function() {
+            const pendingTasks = getPendingTasks();
+            displayTasks(pendingTasks);
+        });
+        
+        document.getElementById('showCompleted').addEventListener('click', function() {
+            const completedTasks = tasks.filter(task => task.status === 'completed');
+            displayTasks(completedTasks);
+        });
+        
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const taskId = document.getElementById('searchTask').value;
+            if (taskId) {
+                const task = findTaskById(taskId);
+                if (task) {
+                    displayTasks([task]);
+                } else {
+                    alert('Task not found!');
+                }
+            } else {
+                alert('Please enter a task ID.');
+            }
+        });
+        
+        document.getElementById('mergeTasks').addEventListener('click', function() {
+            const employee1 = document.getElementById('employee1').value;
+            const employee2 = document.getElementById('employee2').value;
+            
+            if (employee1 && employee2) {
+                const mergedTasks = mergeEmployeeTasks(employee1, employee2);
+                if (mergedTasks.length > 0) {
+                    displayTasks(mergedTasks);
+                    alert(`Merged ${mergedTasks.length} tasks from ${employee1} and ${employee2}`);
+                } else {
+                    alert('No tasks found for these employees.');
+                }
+            } else {
+                alert('Please enter both employee names.');
+            }
+        });
+        
+        // Add event listeners for filters
+        document.getElementById('filterEmployee').addEventListener('change', filterTasks);
+        document.getElementById('filterPriority').addEventListener('change', filterTasks);
+        document.getElementById('filterStatus').addEventListener('change', filterTasks);
+        document.getElementById('sortBy').addEventListener('change', filterTasks);
+        
+        // Initialize the application
+        window.onload = function() {
+            // Add some sample tasks
+            assignTask('John Smith', 'Design Homepage', 'Create wireframes and mockups for the new homepage', 'high', '2023-12-15');
+            assignTask('Emma Johnson', 'Fix Login Bug', 'Investigate and fix the issue with user login', 'high', '2023-12-10');
+            assignTask('Michael Brown', 'Write Documentation', 'Document the new API endpoints', 'medium', '2023-12-20');
+            assignTask('Sarah Davis', 'Update Contact Page', 'Add new team members to the contact page', 'low', '2023-12-25');
+            assignTask('John Smith', 'Test Payment Integration', 'Verify that the payment gateway is working correctly', 'medium', '2023-12-18');
+            
+            // Complete one task
+            completeTask('T2');
+            
+            // Display tasks and stats
+            displayTasks();
+            updateStats();
+            
+            // Demonstrate hoisting
+            console.log("After definition - calling logTasks:");
+            logTasks();
+        };
+    </script>
+</body>
+</html>
